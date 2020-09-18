@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <link rel="stylesheet" href="/templates/plugins/layui/css/layui.css" media="all" />
+    <link rel="stylesheet" href="/templates/css/global.css" media="all">
+    <link rel="stylesheet" href="/templates/css/table.css" />
+    <link rel="stylesheet" href="/templates/css/main.css" />
+    <script type="text/javascript" src="/templates/js/jquery.min.js"></script>
+    <script type="text/javascript" src="/templates/plugins/layui/layui.js"></script>
+    <script type="text/javascript" src="/templates/js/placeholder.js"></script>
+</head>
+<body>
+    <div class="layadmin-user-login-box layadmin-user-login-body layui-form" style="margin-top: 20px;">
+        <div class="layui-form-item">
+            <label class="layui-form-label">标题</label>
+            <div class="layui-input-block">
+                <input type="text" name="title" id="add_title" required="" lay-verify="required" placeholder="请输入标题" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        
+        <div class="layui-form-item">
+            <label class="layui-form-label">级别</label>
+            <div class="layui-input-block">
+                <input type="radio" name="sex" value="0" title="一般">
+                <div class="layui-unselect layui-form-radio"><i class="layui-anim layui-icon"></i>
+                    <div>一般</div>
+                </div>
+                <input type="radio" name="sex" value="1" title="加急" checked="">
+                <div class="layui-unselect layui-form-radio layui-form-radioed"><i class="layui-anim layui-icon"></i>
+                    <div>加急</div>
+                </div>
+            </div>
+        </div>
+        <div class="layui-form-item layui-form-text">
+            <label class="layui-form-label">问题描述</label>
+            <div class="layui-input-block">
+                <textarea  id="add_desc" name="desc" placeholder="请输入内容" class="layui-textarea" lay-verify="required"></textarea>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <div class="layui-input-block">
+                <button class="layui-btn" lay-filter="formDemo" onclick="addQues();">立即提交</button>
+            </div>
+        </div>
+        <input type="hidden" name="cate_id" class="cate_id" value="{$cate_id}">
+    </div>
+    
+    <script type="text/javascript">
+        
+        layui.use('form', function() {
+            var $ = layui.jquery,
+            form = layui.form;
+
+        });
+
+        function addQues(){
+
+            var title = $('#add_title').val();
+            var desc = $('#add_desc').val();
+            var cate_id = $('.cate_id').val();
+            var lev = $("input[name='sex']:checked").val();
+            $.ajax({
+                url:"{:url('cate/send_ques')}",
+                type:"get",
+                dataType: 'json',
+                data:{title:title,desc:desc,lev:lev,cate_id:cate_id},
+                success:function (res) {
+                    var index = parent.layer.getFrameIndex(window.name);
+                    
+                    layer.open({
+                        title: '提示',
+                        content: res.msg,
+                    });
+
+                    if(res.code == 1){
+                        parent.layer.close(index);
+                    }
+                    
+                }
+
+            });
+            
+        }
+
+    </script>
+  
+    
+</body>
+</html>

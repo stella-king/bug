@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+
+    <head>
+        <meta charset="UTF-8">
+        <title></title>
+        <link rel="stylesheet" href="/templates/plugins/layui/css/layui.css" media="all" />
+        <link rel="stylesheet" href="/templates/css/global.css" media="all">
+        <link rel="stylesheet" href="/templates/css/table.css" />
+        <link rel="stylesheet" href="/templates/css/main.css" />
+        <script type="text/javascript" src="/templates/js/jquery.min.js"></script>
+        <link rel="stylesheet" type="text/css" href="/templates/css/bootstrap.min.css"> 
+    </head>
+
+    <body>
+        <div class="admin-main">
+
+            <blockquote class="layui-elem-quote">
+                <button type="button" class="layui-btn" id="quesAdd">添加</button>
+                <div class="ta_search">
+                    <input type="text" id="keyword" name="keyword" value="" required lay-verify="required" placeholder="输入打印机编号或名称"
+                     autocomplete="off" class="layui-input">
+                    <input type="hidden" name="nowPage" id="nowPage" value="1">
+                    <a href="javascript:;" class="layui-btn layui-btn-small" id="search" lay-submit lay-filter="searchPrinter">
+                        <i class="layui-icon">&#xe615;</i> 查询
+                    </a>
+                    <button class="layui-btn" onclick="javascript:location.reload();"><i class="layui-icon layui-icon-refresh-1"></i>刷新</button>
+                </div>
+                <div class="cd"></div>
+            </blockquote>
+            <fieldset class="layui-elem-field">
+                <legend>问题列表</legend>
+                <div class="layui-field-box layui-form">
+                    <table class="site-table table-hover">
+                        <thead>
+                            <tr>
+                                <th>序号</th>
+                                <th>等级</th>
+                                <th>标题</th>
+                                <th>描述</th>
+                                <th>发布人</th>
+                                <th>时间</th>
+                                <th>更新时间</th>
+                                <th>状态</th>
+                            </tr>
+                        </thead>
+                        <tbody id="con">
+                            {foreach $rows as $key=>$v } 
+                            <tr style="cursor: pointer;">
+                                <td>{$v.id}</td>
+                                <td>{$v.level == 0 ? '一般' : '<span style="color:red">加急</span>' }</td>
+                                <td>{$v.title}</td>
+                                <td>{$v.content}</td>
+                                <td>{$v.user_ask_name}</td>
+                                <td>{$v.add_time|date='Y-m-d H:i'}</td>
+                                <td>{$v.update_time|date='Y-m-d H:i'}</td>
+                                <td>{$status[$v.status]|raw}</td>
+                            </tr>
+                            {/foreach}
+                        </tbody>
+                    </table>
+                    {$page|raw}
+                </div>
+            </fieldset>
+           
+        </div>
+
+        <script type="text/javascript" src="/templates/plugins/layui/layui.js"></script>
+        <script type="text/javascript" src="/templates/js/placeholder.js"></script>
+        <script>
+
+            $('#quesAdd').click(function(){
+                var cate_id = "{$cate_id}";
+                layer.open({
+                  type: 2, 
+                  title:'问题发布',
+                  shadeClose :true,
+                  area: ['80%', '400px'],
+                  content: '/back/cate/send_ques/cate_id/' + cate_id
+                });
+            })
+
+            /*多选*/
+            layui.use('form', function() {
+                var $ = layui.jquery,
+                form = layui.form;
+
+                //全选
+                form.on('checkbox(allChoose)', function(data) {
+                    var child = $(data.elem).parents('table').find('tbody input[type="checkbox"]');
+                    child.each(function(index, item) {
+                        item.checked = data.elem.checked;
+                    });
+                    form.render('checkbox');
+                });
+
+                //搜索打印机
+                // form.on('submit(searchPrinter)', function(data) {
+                //     var kw = $('#keyword').val();
+                //     var nowPage = $('#nowPage').val();
+                //     location.href = 'order.php?keyword=' + kw.toString() + '&nowPage=' + nowPage + '#!fenye=' + nowPage;
+                // });
+
+            });
+
+        </script>
+
+    </body>
+
+</html>
